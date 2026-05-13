@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Status — Gospel Partners Initiative</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family:'Inter',sans-serif;
+      background:linear-gradient(135deg,#1e3a8a 0%,#0f172a 100%);
+      min-height:100vh; display:flex; align-items:center; justify-content:center;
+      padding:1rem; color:#334155;
+    }
+    .card {
+      background:#fff; border-radius:20px; padding:3rem 2.5rem;
+      max-width:480px; width:100%; text-align:center;
+      box-shadow:0 25px 60px rgba(0,0,0,0.35);
+      animation:popIn 0.45s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes popIn {
+      from { opacity:0; transform:scale(0.85); }
+      to   { opacity:1; transform:scale(1); }
+    }
+    .icon-wrap {
+      width:80px; height:80px; border-radius:50%;
+      display:flex; align-items:center; justify-content:center;
+      font-size:2.25rem; margin:0 auto 1.5rem;
+    }
+    .icon-success { background:#d1fae5; color:#10b981; }
+    .icon-pending { background:#fef3c7; color:#f59e0b; }
+    .icon-failed  { background:#fee2e2; color:#ef4444; }
+
+    h1 { font-size:1.6rem; color:#0f172a; margin-bottom:0.5rem; }
+    .subtitle { color:#64748b; font-size:0.95rem; margin-bottom:1.5rem; line-height:1.6; }
+
+    .detail-box {
+      background:#f8fafc; border-radius:12px; padding:1.25rem;
+      margin:1.25rem 0; text-align:left;
+    }
+    .detail-row {
+      display:flex; justify-content:space-between;
+      padding:7px 0; border-bottom:1px solid #e2e8f0; font-size:0.875rem;
+    }
+    .detail-row:last-child { border-bottom:none; }
+    .detail-row span:first-child { color:#64748b; }
+    .detail-row strong { color:#0f172a; }
+
+    .ref-box {
+      background:#dbeafe; border:2px dashed #93c5fd; border-radius:10px;
+      padding:0.85rem 1rem; font-size:1rem; font-weight:800;
+      color:#1e3a8a; letter-spacing:1px; margin:1rem 0; word-break:break-all;
+    }
+
+    .btn {
+      display:inline-flex; align-items:center; justify-content:center; gap:0.4rem;
+      padding:0.85rem 2rem; border-radius:50px; font-weight:700;
+      font-size:1rem; text-decoration:none; cursor:pointer; border:none;
+      transition:all 0.2s; margin-top:0.5rem; width:100%;
+    }
+    .btn-primary  { background:#1e3a8a; color:#fff; }
+    .btn-primary:hover  { background:#2563eb; }
+    .btn-accent   { background:#fbbf24; color:#0f172a; }
+    .btn-accent:hover   { background:#f59e0b; }
+    .btn-outline  { background:transparent; color:#1e3a8a; border:2px solid #1e3a8a; }
+    .btn-outline:hover  { background:#1e3a8a; color:#fff; }
+
+    .spinner { display:inline-block; width:24px; height:24px; border:3px solid rgba(255,255,255,0.3); border-top-color:#fff; border-radius:50%; animation:spin 0.8s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+
+    .note { font-size:0.8rem; color:#94a3b8; margin-top:1.25rem; line-height:1.5; }
+  </style>
+</head>
+<body>
+
+<div class="card" id="mainCard">
+  <!-- Content injected by JS -->
+  <div class="icon-wrap icon-pending">
+    <span class="spinner"></span>
+  </div>
+  <h1>Verifying Payment…</h1>
+  <p class="subtitle">Please wait while we confirm your transaction.</p>
+</div>
+
+<script>
+'use strict';
+
+const API_BASE = 'http://localhost:5000/api'; // Change to your deployed URL in production
+
+/* ── Parse query params from Flutterwave redirect ─────────────── */
+const params = new URLSearchParams(window.location.search);
+const status        = params.get('status');
+const txRef         = params.get('tx_ref');
+const transactionId = params.get('transaction_id');
+
+async function init() {
+  const card = document.getElementById('mainCard');
+
+  if (status === 'successful' && txRef && transactionId) {
+    /* Verify on backend */
+    try {
+      const res = await fetch(`${API_BASE}/payments/flutterwave/verify`, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify({ transactionId, txRef }),
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        renderSuccess(data.donation);
+      } else {
+        renderFailed('Payment verification failed. Please contact us with your reference.');
+      }
+    } catch (err) {
+      renderFailed('Could not connect to our server. Please contact us with your reference: ' + txRef);
+    }
+
+  } else if (status === 'cancelled') {
+    renderCancelled();
+  } else if (status === 'failed') {
+    renderFailed('Your payment was not completed. You can try again.');
+  } else {
+    /* No params — maybe navigated directly */
+    renderGeneric();
+  }
+}
+
+function renderSuccess(donation) {
+  document.getElementById('mainCard').innerHTML = `
+    <div class="icon-wrap icon-success"><i class="fa-solid fa-circle-check"></i></div>
+    <h1>Payment Successful! 🙏</h1>
+    <p class="subtitle">Thank you${donation && !donation.isAnonymous ? ', <strong>' + donation.donorName + '</strong>' : ''}!
+      Your donation has been received and will change lives.</p>
+
+    ${donation ? `
+      <div class="detail-box">
+        <div class="detail-row"><span>Receipt #</span><strong>${donation.receiptNumber}</strong></div>
+        <div class="detail-row"><span>Amount</span><strong>${donation.currency} ${parseFloat(donation.amount).toFixed(2)}</strong></div>
+        <div class="detail-row"><span>Program</span><strong>${cap(donation.program)}</strong></div>
+        <div class="detail-row"><span>Status</span><strong style="color:#10b981;">✔ Completed</strong></div>
+      </div>
+      <p style="font-size:0.875rem;color:#64748b;">
+        A receipt has been sent to <strong>${donation.donorEmail}</strong>.
+      </p>
+    ` : ''}
+
+    <a class="btn btn-primary" href="index.html" style="margin-top:1.5rem;">
+      <i class="fa-solid fa-house"></i> Return to Homepage
+    </a>
+    <p class="note">God bless you for your generosity! ❤️</p>
+  `;
+}
+
+function renderFailed(message) {
+  document.getElementById('mainCard').innerHTML = `
+    <div class="icon-wrap icon-failed"><i class="fa-solid fa-circle-xmark"></i></div>
+    <h1>Payment Not Completed</h1>
+    <p class="subtitle">${message}</p>
+    ${txRef ? `
+      <p style="font-size:0.875rem;color:#64748b;margin-bottom:0.5rem;">Your reference number:</p>
+      <div class="ref-box">${txRef}</div>
+      <p style="font-size:0.82rem;color:#94a3b8;">Keep this reference if you need to raise a dispute.</p>
+    ` : ''}
+    <a class="btn btn-accent" href="index.html#donate" style="margin-top:1.5rem;">
+      <i class="fa-solid fa-rotate-right"></i> Try Again
+    </a>
+    <a class="btn btn-outline" href="index.html#contact" style="margin-top:0.75rem;">
+      <i class="fa-solid fa-envelope"></i> Contact Us
+    </a>
+  `;
+}
+
+function renderCancelled() {
+  document.getElementById('mainCard').innerHTML = `
+    <div class="icon-wrap icon-pending"><i class="fa-solid fa-circle-exclamation"></i></div>
+    <h1>Payment Cancelled</h1>
+    <p class="subtitle">No payment was made. You can return and try again whenever you're ready.</p>
+    <a class="btn btn-primary" href="index.html#donate" style="margin-top:1.5rem;">
+      <i class="fa-solid fa-arrow-left"></i> Return to Donate
+    </a>
+    <p class="note">Your generosity matters. Come back anytime. 🙏</p>
+  `;
+}
+
+function renderGeneric() {
+  document.getElementById('mainCard').innerHTML = `
+    <div class="icon-wrap icon-success"><i class="fa-solid fa-hands-holding-heart"></i></div>
+    <h1>Gospel Partners Initiative</h1>
+    <p class="subtitle">Supporting the vulnerable through compassion, faith, and action.</p>
+    <a class="btn btn-primary" href="index.html" style="margin-top:1.5rem;">
+      <i class="fa-solid fa-house"></i> Go to Homepage
+    </a>
+    <a class="btn btn-accent" href="index.html#donate" style="margin-top:0.75rem;">
+      <i class="fa-solid fa-heart"></i> Make a Donation
+    </a>
+  `;
+}
+
+function cap(s) {
+  return (s || '').replace(/[-_]/g,' ').replace(/\b\w/g, l => l.toUpperCase());
+}
+
+/* Run */
+init();
+</script>
+
+</body>
+</html>

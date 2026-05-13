@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Gospel Partners Initiative</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* ── Variables ── */
+    :root {
+      --primary: #1e3a8a;
+      --primary-lt: #2563eb;
+      --accent: #fbbf24;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --danger: #ef4444;
+      --purple: #8b5cf6;
+      --text: #334155;
+      --text-lt: #64748b;
+      --bg: #f1f5f9;
+      --white: #ffffff;
+      --border: #e2e8f0;
+      --sidebar-w: 260px;
+      --header-h: 64px;
+      --radius: 12px;
+      --shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    /* ── Reset ── */
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+      font-size: 0.9rem;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    /* ════════════════════════════════════════
+       LOGIN SCREEN
+    ════════════════════════════════════════ */
+    #loginScreen {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      padding: 1rem;
+    }
+
+    .login-card {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2.5rem 2rem;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+    }
+
+    .login-logo {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .login-logo i {
+      font-size: 2.5rem;
+      color: var(--accent);
+    }
+
+    .login-logo h2 {
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin: 0.5rem 0 0;
+    }
+
+    .login-logo p {
+      color: var(--text-lt);
+      font-size: 0.85rem;
+    }
+
+    .login-field {
+      margin-bottom: 1.1rem;
+    }
+
+    .login-field label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: var(--text);
+      margin-bottom: 0.35rem;
+    }
+
+    .login-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 0.95rem;
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .login-input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.1);
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      margin-top: 0.5rem;
+    }
+
+    .login-btn:hover {
+      background: var(--primary-lt);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    .login-error {
+      color: var(--danger);
+      font-size: 0.82rem;
+      text-align: center;
+      margin-top: 0.75rem;
+      min-height: 1.2rem;
+    }
+
+    /* ════════════════════════════════════════
+       SIDEBAR
+    ════════════════════════════════════════ */
+    .sidebar {
+      width: var(--sidebar-w);
+      background: var(--primary);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      overflow-y: auto;
+      z-index: 100;
+      transition: transform 0.3s;
+    }
+
+    .sidebar-logo {
+      padding: 1.5rem;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .sidebar-logo i {
+      color: var(--accent);
+      font-size: 1.5rem;
+    }
+
+    .sidebar-logo span {
+      font-weight: 700;
+      font-size: 0.9rem;
+      line-height: 1.3;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 1rem 0;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.8rem 1.5rem;
+      color: rgba(255, 255, 255, 0.65);
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .nav-item:hover,
+    .nav-item.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: #fff;
+      border-left-color: var(--accent);
+    }
+
+    .nav-item i {
+      width: 18px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+
+    .nav-badge {
+      margin-left: auto;
+      background: var(--danger);
+      color: #fff;
+      border-radius: 20px;
+      padding: 1px 8px;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .sidebar-footer {
+      padding: 1.25rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .admin-chip {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .admin-avatar {
+      width: 36px;
+      height: 36px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .admin-name {
+      font-weight: 600;
+      font-size: 0.82rem;
+    }
+
+    .admin-role {
+      font-size: 0.72rem;
+      color: rgba(255, 255, 255, 0.55);
+    }
+
+    .logout-btn {
+      width: 100%;
+      padding: 0.6rem;
+      background: rgba(255, 255, 255, 0.08);
+      color: rgba(255, 255, 255, 0.65);
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      transition: all 0.2s;
+    }
+
+    .logout-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+
+    /* ════════════════════════════════════════
+       MAIN LAYOUT
+    ════════════════════════════════════════ */
+    .main {
+      margin-left: var(--sidebar-w);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .topbar {
+      height: var(--header-h);
+      background: var(--white);
+      padding: 0 1.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+
+    .topbar-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .topbar-actions {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .topbar-btn {
+      padding: 0.45rem 0.9rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .topbar-btn:hover {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .content {
+      padding: 1.75rem;
+      flex: 1;
+    }
+
+    /* ════════════════════════════════════════
+       PAGES
+    ════════════════════════════════════════ */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* ════════════════════════════════════════
+       STAT CARDS
+    ════════════════════════════════════════ */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      box-shadow: var(--shadow);
+      border-top: 4px solid var(--primary);
+      transition: all 0.2s;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-md);
+    }
+
+    .stat-card:nth-child(2) {
+      border-top-color: var(--success);
+    }
+
+    .stat-card:nth-child(3) {
+      border-top-color: var(--warning);
+    }
+
+    .stat-card:nth-child(4) {
+      border-top-color: var(--purple);
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--text-lt);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 1.8rem;
+      font-weight: 800;
+      color: var(--primary);
+      line-height: 1.1;
+      margin: 0.35rem 0 0.2rem;
+    }
+
+    .stat-card:nth-child(2) .stat-value {
+      color: var(--success);
+    }
+
+    .stat-card:nth-child(3) .stat-value {
+      color: var(--warning);
+    }
+
+    .stat-card:nth-child(4) .stat-value {
+      color: var(--purple);
+    }
+
+    .stat-sub {
+      font-size: 0.75rem;
+      color: var(--text-lt);
+    }
+
+    /* ════════════════════════════════════════
+       GRID PANELS
+    ════════════════════════════════════════ */
+    .panel-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.25rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* ════════════════════════════════════════
+       CARD PANEL
+    ════════════════════════════════════════ */
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .card-header h3 {
+      font-size: 0.9rem;
+      color: var(--primary);
+      font-weight: 700;
+    }
+
+    .card-header span {
+      font-size: 0.78rem;
+      color: var(--text-lt);
+    }
+
+    .card-body {
+      padding: 1.25rem;
+    }
+
+    /* Breakdown rows */
+    .breakdown-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.7rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .breakdown-row:last-child {
+      border-bottom: none;
+    }
+
+    .breakdown-label {
+      font-weight: 500;
+      font-size: 0.85rem;
+      text-transform: capitalize;
+    }
+
+    .breakdown-right {
+      text-align: right;
+    }
+
+    .breakdown-amount {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+
+    .breakdown-count {
+      font-size: 0.72rem;
+      color: var(--text-lt);
+    }
+
+    /* ════════════════════════════════════════
+       RECENT DONATIONS (dashboard)
+    ════════════════════════════════════════ */
+    .recent-item {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .recent-item:last-child {
+      border-bottom: none;
+    }
+
+    .recent-avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.8rem;
+      color: var(--primary);
+      flex-shrink: 0;
+    }
+
+    .recent-name {
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+
+    .recent-meta {
+      font-size: 0.75rem;
+      color: var(--text-lt);
+    }
+
+    .recent-amount {
+      margin-left: auto;
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 0.875rem;
+    }
+
+    /* ════════════════════════════════════════
+       FILTERS BAR
+    ════════════════════════════════════════ */
+    .filters-bar {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.25rem;
+      align-items: center;
+    }
+
+    .filter-input {
+      padding: 0.55rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: 0.82rem;
+      color: var(--text);
+      background: var(--white);
+      transition: all 0.2s;
+      outline: none;
+    }
+
+    .filter-input:focus {
+      border-color: var(--primary);
+    }
+
+    .search-wrap {
+      position: relative;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    .search-wrap i {
+      position: absolute;
+      left: 0.85rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-lt);
+      font-size: 0.8rem;
+    }
+
+    .search-wrap input {
+      width: 100%;
+      padding-left: 2.2rem;
+    }
+
+    .filter-btn {
+      padding: 0.55rem 1rem;
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      background: var(--primary-lt);
+    }
+
+    /* ════════════════════════════════════════
+       TABLE
+    ════════════════════════════════════════ */
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+    }
+
+    th {
+      text-align: left;
+      padding: 0.7rem 1rem;
+      background: var(--bg);
+      color: var(--text-lt);
+      font-weight: 600;
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.8rem 1rem;
+      border-bottom: 1px solid var(--border);
+      vertical-align: middle;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    tr:hover td {
+      background: #fafcff;
+    }
+
+    .td-name {
+      font-weight: 600;
+    }
+
+    .td-email {
+      font-size: 0.75rem;
+      color: var(--text-lt);
+    }
+
+    .td-amount {
+      font-weight: 700;
+      color: var(--primary);
+      white-space: nowrap;
+    }
+
+    .td-receipt {
+      font-family: monospace;
+      font-size: 0.75rem;
+      color: var(--text-lt);
+    }
+
+    .td-date {
+      font-size: 0.75rem;
+      color: var(--text-lt);
+      white-space: nowrap;
+    }
+
+    /* ════════════════════════════════════════
+       STATUS BADGES
+    ════════════════════════════════════════ */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.2rem 0.65rem;
+      border-radius: 20px;
+      font-size: 0.72rem;
+      font-weight: 600;
+    }
+
+    .badge-completed {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .badge-pending {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-failed {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .badge-refunded {
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    /* Gateway pill */
+    .gw-pill {
+      font-size: 0.75rem;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .gw-stripe {
+      color: #6772e5;
+    }
+
+    .gw-paypal {
+      color: #003087;
+    }
+
+    .gw-flutterwave {
+      color: #e87d0d;
+    }
+
+    .gw-bank_transfer {
+      color: var(--primary);
+    }
+
+    .gw-manual {
+      color: var(--text-lt);
+    }
+
+    /* ════════════════════════════════════════
+       ACTION BUTTONS
+    ════════════════════════════════════════ */
+    .act-btn {
+      padding: 0.3rem 0.65rem;
+      border-radius: 6px;
+      border: none;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+
+    .act-confirm {
+      background: #d1fae5;
+      color: #065f46;
+    }
+
+    .act-confirm:hover {
+      background: var(--success);
+      color: #fff;
+    }
+
+    .act-reject {
+      background: #fee2e2;
+      color: #991b1b;
+    }
+
+    .act-reject:hover {
+      background: var(--danger);
+      color: #fff;
+    }
+
+    /* ════════════════════════════════════════
+       PAGINATION
+    ════════════════════════════════════════ */
+    .pagination {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      margin-top: 1.25rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .page-btn {
+      padding: 0.35rem 0.75rem;
+      border: 1.5px solid var(--border);
+      border-radius: 7px;
+      background: var(--white);
+      font-size: 0.8rem;
+      transition: all 0.2s;
+    }
+
+    .page-btn.active {
+      background: var(--primary);
+      color: #fff;
+      border-color: var(--primary);
+    }
+
+    .page-btn:hover:not(.active) {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    /* ════════════════════════════════════════
+       EMPTY STATE
+    ════════════════════════════════════════ */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-lt);
+    }
+
+    .empty-state i {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      opacity: 0.4;
+    }
+
+    .empty-state p {
+      font-size: 0.9rem;
+    }
+
+    /* ════════════════════════════════════════
+       LOADING SPINNER
+    ════════════════════════════════════════ */
+    .spinner {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-lt);
+    }
+
+    .spinner i {
+      font-size: 1.75rem;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .fa-spin {
+      animation: spin 0.8s linear infinite;
+    }
+
+    /* ════════════════════════════════════════
+       TOAST
+    ════════════════════════════════════════ */
+    #adminToast {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      z-index: 9999;
+      padding: 0.85rem 1.25rem;
+      border-radius: 10px;
+      color: #fff;
+      font-weight: 600;
+      font-size: 0.875rem;
+      display: none;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      max-width: 340px;
+      animation: slideInRight 0.3s ease;
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(30px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0)
+      }
+    }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE
+    ════════════════════════════════════════ */
+    @media (max-width:1100px) {
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width:900px) {
+      .panel-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width:768px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main {
+        margin-left: 0;
+      }
+
+      .stats-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width:480px) {
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ════════════════════════════════════════════════
+     LOGIN SCREEN
+════════════════════════════════════════════════ -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="login-logo">
+        <i class="fa-solid fa-hands-holding-child"></i>
+        <h2>Gospel Partners</h2>
+        <p>Admin Dashboard</p>
+      </div>
+      <div class="login-field">
+        <label>Email Address</label>
+        <input type="email" id="loginEmail" class="login-input" placeholder="admin@gospelpartners.org"
+          autocomplete="username">
+      </div>
+      <div class="login-field">
+        <label>Password</label>
+        <input type="password" id="loginPassword" class="login-input" placeholder="••••••••"
+          autocomplete="current-password">
+      </div>
+      <button class="login-btn" id="loginBtn" onclick="handleLogin()">
+        <i class="fa-solid fa-right-to-bracket"></i> Sign In
+      </button>
+      <div class="login-error" id="loginError"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════
+     SIDEBAR
+════════════════════════════════════════════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <i class="fa-solid fa-hands-holding-child"></i>
+      <span>Gospel Partners<br>Initiative</span>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-item active" onclick="showPage('dashboard',this)">
+        <i class="fa-solid fa-gauge-high"></i> Dashboard
+      </div>
+      <div class="nav-item" onclick="showPage('donations',this)">
+        <i class="fa-solid fa-hand-holding-heart"></i> All Donations
+      </div>
+      <div class="nav-item" onclick="showPage('pending',this)">
+        <i class="fa-solid fa-clock"></i> Pending
+        <span class="nav-badge" id="pendingBadge" style="display:none">0</span>
+      </div>
+      <div class="nav-item" onclick="showPage('bank',this)">
+        <i class="fa-solid fa-building-columns"></i> Bank Transfers
+      </div>
+      <div class="nav-item" onclick="showPage('items',this)">
+        <i class="fa-solid fa-box-open"></i> Items Donations
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="admin-chip">
+        <div class="admin-avatar" id="adminAvatar">A</div>
+        <div>
+          <div class="admin-name" id="adminName">—</div>
+          <div class="admin-role" id="adminRole">—</div>
+        </div>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()">
+        <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+      </button>
+    </div>
+  </aside>
+
+  <!-- ════════════════════════════════════════════════
+     MAIN
+════════════════════════════════════════════════ -->
+  <div class="main">
+
+    <!-- Topbar -->
+    <div class="topbar">
+      <span class="topbar-title" id="topbarTitle">Dashboard Overview</span>
+      <div class="topbar-actions">
+        <button class="topbar-btn" onclick="refreshCurrent()">
+          <i class="fa-solid fa-rotate-right"></i> Refresh
+        </button>
+        <a class="topbar-btn" href="index.html" target="_blank">
+          <i class="fa-solid fa-globe"></i> View Site
+        </a>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══════════════ PAGE: DASHBOARD ══════════════ -->
+      <div class="page active" id="page-dashboard">
+
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Total Donations</div>
+            <div class="stat-value" id="sTotalDonations">—</div>
+            <div class="stat-sub">All time</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Completed</div>
+            <div class="stat-value" id="sCompleted">—</div>
+            <div class="stat-sub">Successful payments</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Pending</div>
+            <div class="stat-value" id="sPending">—</div>
+            <div class="stat-sub">Awaiting confirmation</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Revenue</div>
+            <div class="stat-value" id="sRevenue">—</div>
+            <div class="stat-sub">USD (completed)</div>
+          </div>
+        </div>
+
+        <div class="panel-grid">
+          <div class="card">
+            <div class="card-header">
+              <h3>By Payment Gateway</h3>
+            </div>
+            <div class="card-body" id="gatewayBreakdown">
+              <div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header">
+              <h3>By Program</h3>
+            </div>
+            <div class="card-body" id="programBreakdown">
+              <div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <h3>Recent Donations</h3>
+            <span onclick="showPage('donations', document.querySelector('.nav-item:nth-child(2).'))"
+              style="cursor:pointer;color:var(--primary);">View all →</span>
+          </div>
+          <div class="card-body" id="recentDonations">
+            <div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ══════════════ PAGE: ALL DONATIONS ══════════════ -->
+      <div class="page" id="page-donations">
+        <div class="card">
+          <div class="card-header">
+            <h3>All Donations</h3>
+          </div>
+          <div class="card-body">
+            <div class="filters-bar">
+              <div class="search-wrap">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" class="filter-input" id="searchInput" placeholder="Search name, email, receipt…">
+              </div>
+              <select class="filter-input" id="statusFilter">
+                <option value="">All Statuses</option>
+                <option value="completed">Completed</option>
+                <option value="pending">Pending</option>
+                <option value="failed">Failed</option>
+                <option value="refunded">Refunded</option>
+              </select>
+              <select class="filter-input" id="gatewayFilter">
+                <option value="">All Gateways</option>
+                <option value="stripe">Stripe</option>
+                <option value="paypal">PayPal</option>
+                <option value="flutterwave">Flutterwave</option>
+                <option value="bank_transfer">Bank Transfer</option>
+                <option value="manual">Items / Manual</option>
+              </select>
+              <button class="filter-btn" onclick="loadDonations(1)">
+                <i class="fa-solid fa-filter"></i> Filter
+              </button>
+            </div>
+            <div class="table-wrap" id="donationsTableWrap">
+              <div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+            <div class="pagination" id="donationsPagination"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ PAGE: PENDING ══════════════ -->
+      <div class="page" id="page-pending">
+        <div class="card">
+          <div class="card-header">
+            <h3>Pending Donations</h3>
+            <span style="color:var(--text-lt);font-size:0.78rem;">Donations awaiting completion or confirmation</span>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap" id="pendingTableWrap">
+              <div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ PAGE: BANK TRANSFERS ══════════════ -->
+      <div class="page" id="page-bank">
+        <div class="card">
+          <div class="card-header">
+            <h3>Bank Transfer Donations</h3>
+            <span style="color:var(--text-lt);font-size:0.78rem;">Confirm once funds arrive in your account</span>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap" id="bankTableWrap">
+              <div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════ PAGE: ITEMS ══════════════ -->
+      <div class="page" id="page-items">
+        <div class="card">
+          <div class="card-header">
+            <h3>Items / Goods Donations</h3>
+            <span style="color:var(--text-lt);font-size:0.78rem;">Physical donations awaiting collection or
+              drop-off</span>
+          </div>
+          <div class="card-body">
+            <div class="table-wrap" id="itemsTableWrap">
+              <div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /.content -->
+  </div><!-- /.main -->
+
+  <!-- Toast -->
+  <div id="adminToast"></div>
+
+  <!-- ════════════════════════════════════════════════
+     ADMIN SCRIPT
+════════════════════════════════════════════════ -->
+  <script>
+    'use strict';
+
+    const API = 'http://localhost:5000/api';
+    let authToken = localStorage.getItem('gpi_admin_token');
+    let currentPage = 'dashboard';
+    let donPage = 1;
+
+    /* ── Helpers ─────────────────────────────────────────────────── */
+    async function apiFetch(path, opts = {}) {
+      const res = await fetch(`${API}${path}`, {
+        ...opts,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${authToken}`,
+          ...opts.headers,
+        },
+      });
+      if (res.status === 401) { handleLogout(); return null; }
+      return res.json();
+    }
+
+    const fmt = (n) => parseFloat(n || 0).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const fmtDate = (d) => new Date(d).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
+    const cap = (s) => (s || '').replace(/[-_]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+    const gwClass = (gw) => `gw-pill gw-${gw}`;
+
+    function statusBadge(s) {
+      const map = { completed: 'badge-completed', pending: 'badge-pending', failed: 'badge-failed', refunded: 'badge-refunded' };
+      return `<span class="badge ${map[s] || ''}">${s}</span>`;
+    }
+
+    /* ── Auth ─────────────────────────────────────────────────────── */
+    async function handleLogin() {
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errEl = document.getElementById('loginError');
+      const btn = document.getElementById('loginBtn');
+      errEl.textContent = '';
+      if (!email || !password) { errEl.textContent = 'Please enter email and password.'; return; }
+
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Signing in…';
+
+      try {
+        const res = await fetch(`${API}/admin/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password }),
+        });
+        const data = await res.json();
+        if (!data.success) { errEl.textContent = data.message; return; }
+
+        authToken = data.token;
+        localStorage.setItem('gpi_admin_token', authToken);
+        setAdminUI(data.admin);
+        document.getElementById('loginScreen').style.display = 'none';
+        loadDashboard();
+      } catch {
+        errEl.textContent = 'Cannot connect to server. Is the backend running on port 5000?';
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-right-to-bracket"></i> Sign In';
+      }
+    }
+
+    function setAdminUI(admin) {
+      document.getElementById('adminName').textContent = admin.name;
+      document.getElementById('adminRole').textContent = cap(admin.role);
+      document.getElementById('adminAvatar').textContent = admin.name.charAt(0).toUpperCase();
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('gpi_admin_token');
+      authToken = null;
+      location.reload();
+    }
+
+    /* ── Navigation ───────────────────────────────────────────────── */
+    function showPage(page, el) {
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      if (el) el.classList.add('active');
+      document.getElementById(`page-${page}`).classList.add('active');
+      const titles = {
+        dashboard: 'Dashboard Overview', donations: 'All Donations',
+        pending: 'Pending Donations', bank: 'Bank Transfers', items: 'Items Donations',
+      };
+      document.getElementById('topbarTitle').textContent = titles[page] || page;
+      currentPage = page;
+      loadCurrentPage();
+    }
+
+    function refreshCurrent() { loadCurrentPage(); }
+
+    function loadCurrentPage() {
+      const map = {
+        dashboard: loadDashboard,
+        donations: () => loadDonations(donPage),
+        pending: loadPending,
+        bank: loadBankTransfers,
+        items: loadItemsDonations,
+      };
+      map[currentPage]?.();
+    }
+
+    /* ── Dashboard ────────────────────────────────────────────────── */
+    async function loadDashboard() {
+      const data = await apiFetch('/admin/stats');
+      if (!data?.success) return;
+      const s = data.stats;
+
+      document.getElementById('sTotalDonations').textContent = s.totalDonations.toLocaleString();
+      document.getElementById('sCompleted').textContent = s.completedDonations.toLocaleString();
+      document.getElementById('sPending').textContent = s.pendingDonations.toLocaleString();
+      document.getElementById('sRevenue').textContent = `$${fmt(s.totalRevenue)}`;
+
+      /* Update pending badge */
+      const badge = document.getElementById('pendingBadge');
+      if (s.pendingDonations > 0) {
+        badge.textContent = s.pendingDonations;
+        badge.style.display = 'inline';
+      } else {
+        badge.style.display = 'none';
+      }
+
+      /* Gateway breakdown */
+      document.getElementById('gatewayBreakdown').innerHTML = s.byGateway.length
+        ? s.byGateway.map(g => `
+        <div class="breakdown-row">
+          <span class="breakdown-label">${cap(g._id)}</span>
+          <div class="breakdown-right">
+            <div class="breakdown-amount">$${fmt(g.total)}</div>
+            <div class="breakdown-count">${g.count} donation${g.count !== 1 ? 's' : ''}</div>
+          </div>
+        </div>`).join('')
+        : '<p style="color:var(--text-lt);font-size:0.875rem;">No completed donations yet.</p>';
+
+      /* Program breakdown */
+      document.getElementById('programBreakdown').innerHTML = s.byProgram.length
+        ? s.byProgram.map(p => `
+        <div class="breakdown-row">
+          <span class="breakdown-label">${cap(p._id)}</span>
+          <div class="breakdown-right">
+            <div class="breakdown-amount">$${fmt(p.total)}</div>
+            <div class="breakdown-count">${p.count} donation${p.count !== 1 ? 's' : ''}</div>
+          </div>
+        </div>`).join('')
+        : '<p style="color:var(--text-lt);font-size:0.875rem;">No data yet.</p>';
+
+      /* Recent */
+      document.getElementById('recentDonations').innerHTML = s.recentDonations.length
+        ? s.recentDonations.map(d => `
+        <div class="recent-item">
+          <div class="recent-avatar">${(d.isAnonymous ? '?' : d.donorName.charAt(0)).toUpperCase()}</div>
+          <div>
+            <div class="recent-name">${d.isAnonymous ? 'Anonymous' : d.donorName}</div>
+            <div class="recent-meta">${cap(d.gateway)} · ${fmtDate(d.createdAt)}</div>
+          </div>
+          <div>
+            <div class="recent-amount">${d.amount > 0 ? d.currency + ' ' + fmt(d.amount) : 'Items'}</div>
+            <div style="text-align:right;margin-top:2px;">${statusBadge(d.status)}</div>
+          </div>
+        </div>`).join('')
+        : '<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>No donations yet.</p></div>';
+    }
+
+    /* ── Donations table ──────────────────────────────────────────── */
+    async function loadDonations(page = 1) {
+      donPage = page;
+      const search = document.getElementById('searchInput')?.value || '';
+      const status = document.getElementById('statusFilter')?.value || '';
+      const gateway = document.getElementById('gatewayFilter')?.value || '';
+      const params = new URLSearchParams({ page, limit: 20 });
+      if (search) params.set('search', search);
+      if (status) params.set('status', status);
+      if (gateway) params.set('gateway', gateway);
+
+      document.getElementById('donationsTableWrap').innerHTML = '<div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+      const data = await apiFetch(`/admin/donations?${params}`);
+      if (!data?.success) return;
+
+      renderTable(data.donations, 'donationsTableWrap', true);
+      renderPagination(data.page, data.pages, 'donationsPagination', loadDonations);
+    }
+
+    async function loadPending() {
+      document.getElementById('pendingTableWrap').innerHTML = '<div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+      const data = await apiFetch('/admin/donations?status=pending&limit=50');
+      if (!data?.success) return;
+      renderTable(data.donations, 'pendingTableWrap', true);
+    }
+
+    async function loadBankTransfers() {
+      document.getElementById('bankTableWrap').innerHTML = '<div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+      const data = await apiFetch('/admin/donations?gateway=bank_transfer&limit=50');
+      if (!data?.success) return;
+      renderTable(data.donations, 'bankTableWrap', true);
+    }
+
+    async function loadItemsDonations() {
+      document.getElementById('itemsTableWrap').innerHTML = '<div class="spinner"><i class="fa-solid fa-spinner fa-spin"></i></div>';
+      const data = await apiFetch('/admin/donations?donationType=items&limit=50');
+      if (!data?.success) return;
+      renderTable(data.donations, 'itemsTableWrap', false);
+    }
+
+    function renderTable(donations, containerId, showActions) {
+      const container = document.getElementById(containerId);
+      if (!donations.length) {
+        container.innerHTML = `<div class="empty-state"><i class="fa-solid fa-inbox"></i><p>No donations found.</p></div>`;
+        return;
+      }
+
+      container.innerHTML = `
+    <table>
+      <thead>
+        <tr>
+          <th>Receipt #</th>
+          <th>Donor</th>
+          <th>Amount</th>
+          <th>Gateway</th>
+          <th>Program</th>
+          <th>Status</th>
+          <th>Date</th>
+          ${showActions ? '<th>Actions</th>' : ''}
+        </tr>
+      </thead>
+      <tbody>
+        ${donations.map(d => `
+          <tr>
+            <td class="td-receipt">${d.receiptNumber || '—'}</td>
+            <td>
+              <div class="td-name">${d.isAnonymous ? 'Anonymous' : d.donorName}</div>
+              <div class="td-email">${d.donorEmail}</div>
+            </td>
+            <td class="td-amount">${d.amount > 0 ? d.currency + ' ' + fmt(d.amount) : 'Items'}</td>
+            <td><span class="${gwClass(d.gateway)}">${cap(d.gateway)}</span></td>
+            <td style="font-size:0.8rem;">${cap(d.program)}</td>
+            <td>${statusBadge(d.status)}</td>
+            <td class="td-date">${fmtDate(d.createdAt)}</td>
+            ${showActions ? `
+              <td>
+                ${d.status === 'pending' ? `
+                  <button class="act-btn act-confirm" onclick="updateDonation('${d._id}','completed')">Confirm</button>
+                  <button class="act-btn act-reject"  onclick="updateDonation('${d._id}','failed')" style="margin-left:4px;">Reject</button>
+                ` : `<span style="color:var(--text-lt);font-size:0.75rem;">—</span>`}
+              </td>
+            ` : ''}
+          </tr>
+        `).join('')}
+      </tbody>
+    </table>
+  `;
+    }
+
+    async function updateDonation(id, status) {
+      if (!confirm(`Mark this donation as "${status}"?`)) return;
+      const body = { status };
+      if (status === 'completed') body.bankTransferConfirmedAt = new Date().toISOString();
+      const data = await apiFetch(`/admin/donations/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(body),
+      });
+      if (data?.success) {
+        showAdminToast(`✅ Donation marked as ${status}`, '#10b981');
+        loadCurrentPage();
+      } else {
+        showAdminToast('Failed to update donation', '#ef4444');
+      }
+    }
+
+    function renderPagination(current, total, containerId, loadFn) {
+      const container = document.getElementById(containerId);
+      if (!container || total <= 1) { if (container) container.innerHTML = ''; return; }
+
+      let html = `<button class="page-btn" ${current === 1 ? 'disabled' : ''} onclick="${loadFn.name}(${current - 1})">‹ Prev</button>`;
+      for (let i = 1; i <= total; i++) {
+        if (i === 1 || i === total || Math.abs(i - current) <= 1) {
+          html += `<button class="page-btn ${i === current ? 'active' : ''}" onclick="${loadFn.name}(${i})">${i}</button>`;
+        } else if (Math.abs(i - current) === 2) {
+          html += `<span style="padding:0 2px;color:var(--text-lt);">…</span>`;
+        }
+      }
+      html += `<button class="page-btn" ${current === total ? 'disabled' : ''} onclick="${loadFn.name}(${current + 1})">Next ›</button>`;
+      container.innerHTML = html;
+    }
+
+    /* ── Toast ────────────────────────────────────────────────────── */
+    function showAdminToast(msg, bg = '#10b981') {
+      const t = document.getElementById('adminToast');
+      t.textContent = msg;
+      t.style.background = bg;
+      t.style.display = 'block';
+      t.style.animation = 'none';
+      void t.offsetWidth;
+      t.style.animation = '';
+      clearTimeout(t._timeout);
+      t._timeout = setTimeout(() => { t.style.display = 'none'; }, 3500);
+    }
+
+    /* ── Init ─────────────────────────────────────────────────────── */
+    window.addEventListener('DOMContentLoaded', () => {
+      /* Enter key on login form */
+      document.getElementById('loginPassword').addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleLogin();
+      });
+      document.getElementById('loginEmail').addEventListener('keydown', e => {
+        if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+      });
+
+      /* If token exists, try to auto-login */
+      if (authToken) {
+        fetch(`${API}/admin/me`, {
+          headers: { 'Authorization': `Bearer ${authToken}` },
+        })
+          .then(r => r.json())
+          .then(data => {
+            if (data?.success) {
+              setAdminUI(data.admin);
+              document.getElementById('loginScreen').style.display = 'none';
+              loadDashboard();
+            } else {
+              localStorage.removeItem('gpi_admin_token');
+              authToken = null;
+            }
+          })
+          .catch(() => { });
+      }
+    });
+  </script>
+
+</body>
+
+</html>

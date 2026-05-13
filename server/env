@@ -1,0 +1,63 @@
+# ============================================================
+# THE GOSPEL PARTNERS INITIATIVE — ENVIRONMENT VARIABLES
+# ============================================================
+# Fill in every value before running. Never commit this file.
+
+# ── Server ────────────────────────────────────────────────
+PORT=5000
+NODE_ENV=development
+CLIENT_URL=http://localhost:3000
+
+# ── MongoDB ───────────────────────────────────────────────
+# Get a free URI from https://cloud.mongodb.com
+MONGODB_URI=mongodb+srv://USERNAME:PASSWORD@cluster.mongodb.net/gospel-partners?retryWrites=true&w=majority
+
+# ── JWT ───────────────────────────────────────────────────
+JWT_SECRET=change_this_to_a_long_random_string_at_least_32_chars
+JWT_EXPIRES_IN=7d
+
+# ── First admin account (created automatically on first run) ──
+ADMIN_NAME=Super Admin
+ADMIN_EMAIL=admin@gospelpartners.org
+ADMIN_PASSWORD=ChangeMe123!
+
+# ── Stripe ────────────────────────────────────────────────
+# https://dashboard.stripe.com/apikeys
+STRIPE_SECRET_KEY=sk_test_YOUR_STRIPE_SECRET_KEY
+STRIPE_PUBLISHABLE_KEY=pk_test_YOUR_STRIPE_PUBLISHABLE_KEY
+# stripe listen --forward-to localhost:5000/api/webhooks/stripe
+STRIPE_WEBHOOK_SECRET=whsec_YOUR_WEBHOOK_SECRET
+
+# ── PayPal ────────────────────────────────────────────────
+# https://developer.paypal.com/dashboard/applications/sandbox
+PAYPAL_CLIENT_ID=YOUR_PAYPAL_CLIENT_ID
+PAYPAL_CLIENT_SECRET=YOUR_PAYPAL_CLIENT_SECRET
+PAYPAL_BASE_URL=https://api-m.sandbox.paypal.com
+# For live: https://api-m.paypal.com
+
+# ── Flutterwave ───────────────────────────────────────────
+# https://dashboard.flutterwave.com/dashboard/settings/apis
+FLUTTERWAVE_PUBLIC_KEY=FLWPUBK_TEST-YOUR_PUBLIC_KEY
+FLUTTERWAVE_SECRET_KEY=FLWSECK_TEST-YOUR_SECRET_KEY
+FLUTTERWAVE_ENCRYPTION_KEY=YOUR_ENCRYPTION_KEY
+
+# ── Email (Nodemailer) ────────────────────────────────────
+# For Gmail: enable 2FA, then create an App Password at
+# https://myaccount.google.com/apppasswords
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_SECURE=false
+EMAIL_USER=your-gmail@gmail.com
+EMAIL_PASSWORD=your_16_char_app_password
+EMAIL_FROM="Gospel Partners Initiative <noreply@gospelpartners.org>"
+
+# YOUR personal email — where donation alerts are sent
+ADMIN_NOTIFY_EMAIL=yourpersonal@email.com
+
+# ── Bank Transfer Details (shown to donors) ───────────────
+BANK_NAME=Your Bank Name Here
+BANK_ACCOUNT_NAME=The Gospel Partners Initiative
+BANK_ACCOUNT_NUMBER=0123456789
+BANK_SORT_CODE=12-34-56
+BANK_SWIFT_CODE=XXXXGB2L
+BANK_IBAN=GB00XXXX00000000000000
